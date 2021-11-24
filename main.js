@@ -20,8 +20,7 @@ class Block {
             this.hash = this.calculateHash();
         }
 
-        console.log("Nonce: " + this.nonce);
-        console.log("Block Hash: " + this.hash);
+        //console.log("Block Hash: " + this.hash);
     }
 }
 
@@ -60,6 +59,10 @@ class Blockchain {
             if (currentBlock.previousHash !== previouBlock.hash) {
                 return false;
             }
+
+            if (currentBlock.nonce === 0) {
+                return false;
+            }
         }
 
 
@@ -78,7 +81,7 @@ ourChain.addBlock(new Block(3, "23//11/2021", {amount: 200, from: 'Tahmid', to: 
 console.log("Mining block 4 ... ...");
 ourChain.addBlock(new Block(4, "23//11/2021", {amount: 240, from: 'Mehedi', to: 'Sunny'}));
 
-/*
+
 if (ourChain.isChainValid) {
     console.log("The block is valid");
     console.log(JSON.stringify(ourChain, null, 4));
@@ -100,4 +103,3 @@ ourChain.chain[1].hash = ourChain.chain[1].calculateHash();
 console.log('Is the blockchain valid? ' + ourChain.isChainValid());
 
 //console.log(JSON.stringify(ourChain, null, 4));
-*/
