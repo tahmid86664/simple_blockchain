@@ -7,10 +7,21 @@ class Block {
         this.data = data;
         this.previousHash = previousHash;
         this.hash = this.calculateHash();
+        this.nonce = 0;
     }
 
     calculateHash = () => {
-        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data)).toString();
+        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
+    }
+
+    mineBlock = (difficulty) => {
+        while (this.hash.substring(0, difficulty) !== Array(difficulty + 1).join('0')) {
+            this.nonce++;
+            this.hash = this.calculateHash();
+        }
+
+        console.log("Nonce: " + this.nonce);
+        console.log("Block Hash: " + this.hash);
     }
 }
 
@@ -18,6 +29,7 @@ class Block {
 class Blockchain {
     constructor () {
         this.chain = [this.createGenesisBlock()];
+        this.difficulty = 3;
     }
 
     createGenesisBlock () {
@@ -30,7 +42,8 @@ class Blockchain {
 
     addBlock (newBlock) {
         newBlock.previousHash = this.getLatestBlock().hash;
-        newBlock.hash = newBlock.calculateHash();
+        //newBlock.hash = newBlock.calculateHash();
+        newBlock.mineBlock(this.difficulty);
         this.chain.push(newBlock);
     }
 
@@ -56,8 +69,14 @@ class Blockchain {
 
 
 let ourChain = new Blockchain();
+console.log("Mining block 1 ... ...");
 ourChain.addBlock(new Block(1, "22//11/2021", {amount: 100, from: 'Tahmid', to: 'Prantick'}));
-ourChain.addBlock(new Block(1, "23//11/2021", {amount: 200, from: 'Prantick', to: 'Mehedi'}));
+console.log("Mining block 2 ... ...");
+ourChain.addBlock(new Block(2, "23//11/2021", {amount: 400, from: 'Prantick', to: 'Mehedi'}));
+console.log("Mining block 3 ... ...");
+ourChain.addBlock(new Block(3, "23//11/2021", {amount: 200, from: 'Tahmid', to: 'Mehedi'}));
+console.log("Mining block 4 ... ...");
+ourChain.addBlock(new Block(4, "23//11/2021", {amount: 240, from: 'Mehedi', to: 'Sunny'}));
 
 /*
 if (ourChain.isChainValid) {
@@ -66,7 +85,7 @@ if (ourChain.isChainValid) {
 } else {
     console.log("The block chain is not valid. Something wrong in it");
 }
-*/
+
 
 console.log('Is the blockchain valid? ' + ourChain.isChainValid());
 
@@ -79,3 +98,6 @@ console.log('Is the blockchain valid? ' + ourChain.isChainValid());
 console.log("After re-calculate hash of a block");
 ourChain.chain[1].hash = ourChain.chain[1].calculateHash();
 console.log('Is the blockchain valid? ' + ourChain.isChainValid());
+
+//console.log(JSON.stringify(ourChain, null, 4));
+*/
